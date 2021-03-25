@@ -40,7 +40,7 @@ void AFPSBlackHole::BeginPlay()
 
 void AFPSBlackHole::SimulateBlackHole()
 {
-
+	
 }
 
 // Called every frame
@@ -49,8 +49,10 @@ void AFPSBlackHole::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	TArray<UPrimitiveComponent*> Components;
+	
 
 	SimulatingSphereComp->GetOverlappingComponents(Components);
+	SimulatingSphereComp->AddForce(FVector(200, 200, 200), NAME_None,true);
 
 }
 
