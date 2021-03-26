@@ -19,15 +19,19 @@ AFPSBlackHole::AFPSBlackHole()
 	SimulatingSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SimulatingSphereComp"));
 	SimulatingSphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SimulatingSphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
-	SimulatingSphereComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	SimulatingSphereComp->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Overlap);
 	SimulatingSphereComp->SetupAttachment(MeshComp);
+	SimulatingSphereComp->SetSphereRadius(4000.f);
+	SimulatingSphereComp->bHiddenInGame = false;
 
 
 	DestructiveSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("DestructiveSphereComp"));
 	DestructiveSphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	DestructiveSphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
-	DestructiveSphereComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	DestructiveSphereComp->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Overlap);
 	DestructiveSphereComp->SetupAttachment(MeshComp);
+	DestructiveSphereComp->SetSphereRadius(200.f);
+	DestructiveSphereComp->bHiddenInGame = false;
 
 }
 
@@ -48,11 +52,12 @@ void AFPSBlackHole::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	TArray<UPrimitiveComponent*> Components;
+	//TArray<UPrimitiveComponent*> Components;
 	
 
-	SimulatingSphereComp->GetOverlappingComponents(Components);
-	SimulatingSphereComp->AddForce(FVector(200, 200, 200), NAME_None,true);
+	//SimulatingSphereComp->GetOverlappingComponents(Components);
+	
+	
 
 }
 
