@@ -42,11 +42,6 @@ void AFPSBlackHole::BeginPlay()
 	
 }
 
-void AFPSBlackHole::SimulateBlackHole()
-{
-	
-}
-
 // Called every frame
 void AFPSBlackHole::Tick(float DeltaTime)
 {
