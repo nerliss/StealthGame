@@ -46,13 +46,5 @@ void AFPSBlackHole::BeginPlay()
 void AFPSBlackHole::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//TArray<UPrimitiveComponent*> Components;
-	
-
-	//SimulatingSphereComp->GetOverlappingComponents(Components);
-	
-	
-
 }
 
