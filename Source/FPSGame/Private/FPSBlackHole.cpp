@@ -26,10 +26,11 @@ AFPSBlackHole::AFPSBlackHole()
 	DestructiveSphereComp->SetSphereRadius(200.f);
 	DestructiveSphereComp->bHiddenInGame = false;
 
-	DestructiveSphereComp->OnComponentBeginOverlap.AddDynamic(this, &AFPSBlackHole::OverlapDestructiveSphere);
+	DestructiveSphereComp->OnComponentBeginOverlap.AddDynamic(this, &AFPSBlackHole::OverlapDestructiveSphere); // Event binding
 
 }
 
+// Destructive sphere implementation
 void AFPSBlackHole::OverlapDestructiveSphere(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor)
