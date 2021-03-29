@@ -17,34 +17,46 @@ AFPSBlackHole::AFPSBlackHole()
 	RootComponent = MeshComp;
 
 	SimulatingSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SimulatingSphereComp"));
-	SimulatingSphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	SimulatingSphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
-	SimulatingSphereComp->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Overlap);
 	SimulatingSphereComp->SetupAttachment(MeshComp);
 	SimulatingSphereComp->SetSphereRadius(4000.f);
 	SimulatingSphereComp->bHiddenInGame = false;
 
-
 	DestructiveSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("DestructiveSphereComp"));
-	DestructiveSphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	DestructiveSphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
-	DestructiveSphereComp->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Overlap);
 	DestructiveSphereComp->SetupAttachment(MeshComp);
 	DestructiveSphereComp->SetSphereRadius(200.f);
 	DestructiveSphereComp->bHiddenInGame = false;
 
+	DestructiveSphereComp->OnComponentBeginOverlap.AddDynamic(this, &AFPSBlackHole::OverlapDestructiveSphere);
+
 }
 
-// Called when the game starts or when spawned
-void AFPSBlackHole::BeginPlay()
+void AFPSBlackHole::OverlapDestructiveSphere(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Super::BeginPlay();
-	
+	if (OtherActor)
+	{
+		OtherActor->Destroy();
+	}
 }
 
 // Called every frame
 void AFPSBlackHole::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	TArray<UPrimitiveComponent*> OverlappingComponents;
+	SimulatingSphereComp->GetOverlappingComponents(OverlappingComponents);
+
+	for (int32 i = 0; i < OverlappingComponents.Num(); i++)
+	{
+		UPrimitiveComponent* PrimComp = OverlappingComponents[i];
+		if (PrimComp && PrimComp->IsSimulatingPhysics()) // Checking whether the component is able to simulate physics
+		{
+			const float SphereRadius = SimulatingSphereComp->GetScaledSphereRadius();
+			const float SimulatingForce = -2000; // Negative value pulls objects to center, positive - pushes out
+
+			PrimComp->AddRadialForce(GetActorLocation(), SphereRadius, SimulatingForce, ERadialImpulseFalloff::RIF_Constant, true);
+		}
+	}
+
 }
 
