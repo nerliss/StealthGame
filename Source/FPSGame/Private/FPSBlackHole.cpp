@@ -53,7 +53,7 @@ void AFPSBlackHole::Tick(float DeltaTime)
 		if (PrimComp && PrimComp->IsSimulatingPhysics()) // Checking whether the component is able to simulate physics
 		{
 			const float SphereRadius = SimulatingSphereComp->GetScaledSphereRadius();
-			const float SimulatingForce = -2000; // Negative value pulls objects to center, positive - pushes out
+			const float SimulatingForce = -3000; // Negative value pulls objects to center, positive - pushes out
 
 			PrimComp->AddRadialForce(GetActorLocation(), SphereRadius, SimulatingForce, ERadialImpulseFalloff::RIF_Constant, true);
 		}
