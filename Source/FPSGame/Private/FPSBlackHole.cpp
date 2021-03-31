@@ -23,7 +23,7 @@ AFPSBlackHole::AFPSBlackHole()
 
 	DestructiveSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("DestructiveSphereComp"));
 	DestructiveSphereComp->SetupAttachment(MeshComp);
-	DestructiveSphereComp->SetSphereRadius(200.f);
+	DestructiveSphereComp->SetSphereRadius(150.f);
 	DestructiveSphereComp->bHiddenInGame = false;
 
 	DestructiveSphereComp->OnComponentBeginOverlap.AddDynamic(this, &AFPSBlackHole::OverlapDestructiveSphere); // Event binding
