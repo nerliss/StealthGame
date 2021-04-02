@@ -40,7 +40,7 @@ void AFPSLaunchPad::OverlapLaunchPad(UPrimitiveComponent* OverlappedComponent, A
 
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ActivateLaunchPadFX, GetActorLocation());
 	}
-	// If the target is not player checks whether the overlapped object simulates physics
+	// If the target is not the player checks whether the overlapped object simulates physics
 	else if (OtherComp && OtherComp->IsSimulatingPhysics())
 	{
 		OtherComp->AddImpulse(LaunchVelocity, NAME_None, true);
