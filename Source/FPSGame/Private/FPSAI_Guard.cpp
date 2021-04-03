@@ -38,7 +38,7 @@ void AFPSAI_Guard::OnPawnSeen(APawn* SeenPawn)
 
 void AFPSAI_Guard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)
 {
-	DrawDebugSphere(GetWorld(), Location, 32.f, 12, FColor::Black, false, 10.f);
+	DrawDebugSphere(GetWorld(), Location, 30.f, 12, FColor::Black, false, 10.f);
 }
 
 // Called every frame
