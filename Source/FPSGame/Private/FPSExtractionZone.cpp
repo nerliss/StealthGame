@@ -15,7 +15,7 @@ AFPSExtractionZone::AFPSExtractionZone()
 	OverlapComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	OverlapComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 	OverlapComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-	OverlapComp->SetBoxExtent(FVector(200.0f));
+	OverlapComp->SetBoxExtent(FVector(220.0f));
 	RootComponent = OverlapComp;
 
 	OverlapComp->SetHiddenInGame(false);
