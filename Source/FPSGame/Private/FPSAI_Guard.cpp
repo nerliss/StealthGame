@@ -6,6 +6,8 @@
 #include "DrawDebugHelpers.h"
 #include "TimerManager.h"
 #include "FPSGameMode.h"
+#include "NavigationSystem.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 // Sets default values
 AFPSAI_Guard::AFPSAI_Guard()
@@ -30,6 +32,10 @@ void AFPSAI_Guard::BeginPlay()
 	
 	OriginalRotation = GetActorRotation();
 
+	if (bPatrol)
+	{
+		MoveToNextPatrolPoint();
+	}
 }
 
 void AFPSAI_Guard::OnPawnSeen(APawn* SeenPawn)
@@ -48,6 +54,14 @@ void AFPSAI_Guard::OnPawnSeen(APawn* SeenPawn)
 	}
 
 	SetGuardState(EAIState::Alerted);
+
+	// Stop movement while patrolling when a pawn seen
+	AController* Controller = GetController();
+	if (Controller)
+	{
+		Controller->StopMovement();
+	}
+
 }
 
 void AFPSAI_Guard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)
@@ -76,6 +90,12 @@ void AFPSAI_Guard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location,
 
 	SetGuardState(EAIState::Suspicious);
 	
+	// Stop movement while patrolling when a noise heard
+	AController* Controller = GetController();
+	if (Controller)
+	{
+		Controller->StopMovement();
+	}
 }
 
 void AFPSAI_Guard::ResetOrientation()
@@ -88,6 +108,12 @@ void AFPSAI_Guard::ResetOrientation()
 	SetActorRotation(OriginalRotation);
 
 	SetGuardState(EAIState::Idle);
+
+	// Stopped investigating if a patrolling pawn, pick a new patrol point
+	if (bPatrol)
+	{
+		MoveToNextPatrolPoint();
+	}
 }
 
 void AFPSAI_Guard::SetGuardState(EAIState NewState)
@@ -107,5 +133,33 @@ void AFPSAI_Guard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Patrol goal check
+	if (PatrolPointCurrent)
+	{
+		FVector Delta = GetActorLocation() - PatrolPointCurrent->GetActorLocation();
+		float DistanceToGoal = Delta.Size();
+
+		// Check if a pawn is within 50 units of a goal, if so - take a new point
+		if (DistanceToGoal < 100.f)
+		{
+			MoveToNextPatrolPoint();
+		}
+	}
+
+}
+
+void AFPSAI_Guard::MoveToNextPatrolPoint()
+{
+	// Assign next patrol point
+	if (PatrolPointCurrent == nullptr || PatrolPointCurrent == PatrolPointTwo)
+	{
+		PatrolPointCurrent = PatrolPointOne;
+	}
+	else
+	{
+		PatrolPointCurrent = PatrolPointTwo;
+	}
+
+	UAIBlueprintHelperLibrary::SimpleMoveToActor(GetController(), PatrolPointCurrent);
 }
 

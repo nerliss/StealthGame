@@ -47,16 +47,34 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "AI")
 	void OnStateChanged(EAIState NewState);
 
-	// Original rotation of a pawn
+	/* Original rotation of a pawn*/
 	FRotator OriginalRotation;
 
-	// Timer handler for reset to original rotation
+	/* Timer handler for reset to original rotation*/
 	FTimerHandle TimerHandle_ResetOrientation;
 
-	// Guard state 
+	/* Guard state*/ 
 	EAIState GuardState;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+protected:
+
+	// PATROLLING
+
+	/* Allows a pawn to patrol*/
+	UPROPERTY(EditInstanceOnly, Category = "AI")
+	bool bPatrol;
+
+	UPROPERTY(EditInstanceOnly, Category = "AI", meta = (EditCondition = "bPatrol")) // meta tag turns to gray or highlights current field based on bPatrol variable
+	AActor* PatrolPointOne;
+
+	UPROPERTY(EditInstanceOnly, Category = "AI", meta = (EditCondition = "bPatrol"))
+	AActor* PatrolPointTwo;
+
+	AActor* PatrolPointCurrent;
+
+	void MoveToNextPatrolPoint();
 };
