@@ -5,6 +5,7 @@
 #include "Perception/PawnSensingComponent.h"
 #include "DrawDebugHelpers.h"
 #include "TimerManager.h"
+#include "FPSGameMode.h"
 
 // Sets default values
 AFPSAI_Guard::AFPSAI_Guard()
@@ -17,6 +18,8 @@ AFPSAI_Guard::AFPSAI_Guard()
 	// Binding events
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &AFPSAI_Guard::OnPawnSeen);
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &AFPSAI_Guard::OnNoiseHeard);
+
+	GuardState = EAIState::Idle;
 
 }
 
@@ -37,10 +40,23 @@ void AFPSAI_Guard::OnPawnSeen(APawn* SeenPawn)
 	}
 
 	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.f, 12, FColor::Green, false, 10.f);
+
+	AFPSGameMode* GM = Cast<AFPSGameMode>(GetWorld()->GetAuthGameMode()); // Get gamemode state
+	if (GM)
+	{
+		GM->CompleteMission(SeenPawn, false); // Mission fail statement 
+	}
+
+	SetGuardState(EAIState::Alerted);
 }
 
 void AFPSAI_Guard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location, float Volume)
 {
+	if (GuardState == EAIState::Alerted) // do nothing if alerted
+	{
+		return;
+	}
+
 	DrawDebugSphere(GetWorld(), Location, 30.f, 12, FColor::Black, false, 10.f);
 
 	// Direction vector
@@ -57,11 +73,33 @@ void AFPSAI_Guard::OnNoiseHeard(APawn* NoiseInstigator, const FVector& Location,
 	// Timer to reset rotation
 	GetWorldTimerManager().ClearTimer(TimerHandle_ResetOrientation);
 	GetWorldTimerManager().SetTimer(TimerHandle_ResetOrientation, this, &AFPSAI_Guard::ResetOrientation, 3.f, false);
+
+	SetGuardState(EAIState::Suspicious);
+	
 }
 
 void AFPSAI_Guard::ResetOrientation()
 {
+	if (GuardState == EAIState::Alerted) // do nothing if alerted
+	{
+		return;
+	}
+
 	SetActorRotation(OriginalRotation);
+
+	SetGuardState(EAIState::Idle);
+}
+
+void AFPSAI_Guard::SetGuardState(EAIState NewState)
+{
+	if (GuardState == NewState) // safecheck
+	{
+		return;
+	}
+
+	GuardState = NewState;
+
+	OnStateChanged(GuardState);
 }
 
 // Called every frame
