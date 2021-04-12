@@ -8,6 +8,7 @@
 #include "FPSGameMode.h"
 #include "NavigationSystem.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AFPSAI_Guard::AFPSAI_Guard()
@@ -124,8 +125,20 @@ void AFPSAI_Guard::SetGuardState(EAIState NewState)
 	}
 
 	GuardState = NewState;
+	OnRep_GuardState(); // to make sure there is no difference between server and client
+}
 
+void AFPSAI_Guard::OnRep_GuardState()
+{
 	OnStateChanged(GuardState);
+}
+
+// Function that applies a default rule to update GuardState variable
+void AFPSAI_Guard::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOPERLIFETIME(AFPSAI_Guard, GuardState);
 }
 
 // Called every frame

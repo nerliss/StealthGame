@@ -54,7 +54,12 @@ protected:
 	FTimerHandle TimerHandle_ResetOrientation;
 
 	/* Guard state*/ 
+	UPROPERTY(ReplicatedUsing = OnRep_GuardState)
 	EAIState GuardState;
+
+	/* Replicated (clientside) guard state function*/
+	UFUNCTION()
+	void OnRep_GuardState();
 
 public:	
 	// Called every frame
