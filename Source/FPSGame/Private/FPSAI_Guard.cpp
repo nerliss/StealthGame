@@ -133,14 +133,6 @@ void AFPSAI_Guard::OnRep_GuardState()
 	OnStateChanged(GuardState);
 }
 
-// Function that applies a default rule to update GuardState variable
-void AFPSAI_Guard::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOPERLIFETIME(AFPSAI_Guard, GuardState);
-}
-
 // Called every frame
 void AFPSAI_Guard::Tick(float DeltaTime)
 {
@@ -174,5 +166,13 @@ void AFPSAI_Guard::MoveToNextPatrolPoint()
 	}
 
 	UAIBlueprintHelperLibrary::SimpleMoveToActor(GetController(), PatrolPointCurrent);
+}
+
+// Function that applies a default rule to update GuardState variable
+void AFPSAI_Guard::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AFPSAI_Guard, GuardState);
 }
 
