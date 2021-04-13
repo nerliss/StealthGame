@@ -128,6 +128,14 @@ void AFPSAI_Guard::SetGuardState(EAIState NewState)
 	OnRep_GuardState(); // to make sure there is no difference between server and client
 }
 
+// Function that applies a default rule to update GuardState variable
+void AFPSAI_Guard::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AFPSAI_Guard, GuardState);
+}
+
 void AFPSAI_Guard::OnRep_GuardState()
 {
 	OnStateChanged(GuardState);
@@ -166,13 +174,5 @@ void AFPSAI_Guard::MoveToNextPatrolPoint()
 	}
 
 	UAIBlueprintHelperLibrary::SimpleMoveToActor(GetController(), PatrolPointCurrent);
-}
-
-// Function that applies a default rule to update GuardState variable
-void AFPSAI_Guard::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(AFPSAI_Guard, GuardState);
 }
 
